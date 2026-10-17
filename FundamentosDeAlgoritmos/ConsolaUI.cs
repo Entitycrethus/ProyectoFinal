@@ -23,8 +23,5 @@ namespace FundamentosDeAlgoritmos
             Console.WriteLine($"Estudiantes registrados: {estudiantes.Count}");
             Console.WriteLine();
         }
-
-
-
     }
 }

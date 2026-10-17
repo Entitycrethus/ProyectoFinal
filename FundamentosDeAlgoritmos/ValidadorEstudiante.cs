@@ -8,7 +8,7 @@ namespace FundamentosDeAlgoritmos
     {
 
         // Validaciones
-        public static bool EsCodigoValido(string t)
+        public static bool EsDNIValido(string t)
         {
             if (t.Length > 8 || t.Length < 8) return false;
             foreach (char c in t)

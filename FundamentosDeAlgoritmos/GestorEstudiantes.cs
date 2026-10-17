@@ -7,34 +7,34 @@ namespace FundamentosDeAlgoritmos
 {
     public class GestorEstudiantes
     {
-
         public static List<Estudiante> estudiantes = new List<Estudiante>();
-
-        static Estudiante BuscarPorCodigo(string codigo)
+        static Estudiante BuscarPorDNI(int DNI)
         {
             foreach (Estudiante e in estudiantes)
             {
-                if (e.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+                if (e.DNI == DNI.ToString())
                     return e;
             }
             return null;
         }
-
         // 1. Registrar
         public static void RegistrarEstudiante()
         {
-            Console.WriteLine("--- REGISTRAR ESTUDIANTE ---");
-            string codigo;
+            Console.Clear();
+            Console.WriteLine("=========================================");
+            Console.WriteLine("         REGISTRO DE ESTUDIANTES");
+            Console.WriteLine("=========================================");
+            int DNI;
             while (true)
             {
-                codigo = LeerTexto("Codigo de estudante (8 digitos): ", EsCodigoValido,
-                     "Código inválido. Solo esta permitido 8 digitos númericos.");
-                if (BuscarPorCodigo(codigo) == null) break;
-                Console.WriteLine("Ya existe un estudiante con ese código (registro duplicado).");
+                DNI = int.Parse(LeerTexto("DNI del estudante (8 digitos): ", EsDNIValido,
+                     "DNI inválido. Solo esta permitido 8 digitos númericos."));
+                if (BuscarPorDNI(DNI) == null) break;
+                Console.WriteLine("Ya existe un estudiante con ese DNI.");
             }
             Estudiante nuevo = new Estudiante
             {
-                Codigo = codigo.ToUpper(),
+                DNI = DNI.ToString(),
                 Nombres = LeerTexto("Nombres: ", EsNombreValido, "Solo se permiten letras y espacios."),
                 Apellidos = LeerTexto("Apellidos: ", EsNombreValido, "Solo se permiten letras y espacios."),
                 Grado = LeerEntero("Grado (1 a 6): ", 1, 6),
@@ -43,21 +43,24 @@ namespace FundamentosDeAlgoritmos
             };
             estudiantes.Add(nuevo);
             GuardarEnArchivo();
-            Console.WriteLine("\nEstudiante registrado correctamente.");
+            Console.WriteLine("Estudiante registrado correctamente.");
         }
         // 2. Buscar
         public static void BuscarEstudiante()
         {
-            Console.WriteLine("--- BUSCAR ESTUDIANTE ---");
-            Console.WriteLine("1. Por código");
+            Console.Clear();
+            Console.WriteLine("=========================================");
+            Console.WriteLine("         BUSQUEDA DE ESTUDIANTE");
+            Console.WriteLine("=========================================");
+            Console.WriteLine("1. Por DNI");
             Console.WriteLine("2. Por nombre o apellido");
             Console.WriteLine("3. Por grado y sección");
             int criterio = LeerEntero("Buscar por: ", 1, 3);
             List<Estudiante> resultados = new List<Estudiante>();
             if (criterio == 1)
             {
-                string codigo = LeerTexto("Código: ", t => t.Length > 0, "Ingrese un código.");
-                Estudiante e = BuscarPorCodigo(codigo);
+                int DNI = int.Parse(LeerTexto("DNI: ", EsDNIValido, "Ingrese un DNI válido."));
+                Estudiante e = BuscarPorDNI(DNI);
                 if (e != null) resultados.Add(e);
             }
             else if (criterio == 2)
@@ -85,9 +88,12 @@ namespace FundamentosDeAlgoritmos
         // 3. Modificar (dejar vacío = conservar el valor actual)
         public static void ModificarEstudiante()
         {
-            Console.WriteLine("--- MODIFICAR ESTUDIANTE ---");
-            string codigo = LeerTexto("Código del estudiante: ", t => t.Length > 0, "Ingrese un código.");
-            Estudiante e = BuscarPorCodigo(codigo);
+            Console.Clear();
+            Console.WriteLine("=========================================");
+            Console.WriteLine("         MODIFICAR ESTUDIANTE");
+            Console.WriteLine("=========================================");
+            int DNI = int.Parse(LeerTexto("DNI del estudiante: ", EsDNIValido, "Ingrese un DNI válido."));
+            Estudiante e = BuscarPorDNI(DNI);
             if (e == null)
             {
                 Console.WriteLine("No se encontró el estudiante.");
@@ -113,14 +119,17 @@ namespace FundamentosDeAlgoritmos
         // 4. Ordenar y listar
         public static void OrdenarYListar()
         {
-            Console.WriteLine("--- ORDENAR ESTUDIANTES ---");
-            Console.WriteLine("1. Por código");
+            Console.Clear();
+            Console.WriteLine("=========================================");
+            Console.WriteLine("         ORDENAR ESTUDIANTES");
+            Console.WriteLine("=========================================");
+            Console.WriteLine("1. Por DNI");
             Console.WriteLine("2. Por apellidos");
             Console.WriteLine("3. Por grado y sección");
             int criterio = LeerEntero("Ordenar por: ", 1, 3);
             Comparison<Estudiante> comparar;
             if (criterio == 1)
-                comparar = (a, b) => string.Compare(a.Codigo, b.Codigo, StringComparison.OrdinalIgnoreCase);
+                comparar = (a, b) => string.Compare(a.DNI, b.DNI, StringComparison.OrdinalIgnoreCase);
             else if (criterio == 2)
                 comparar = (a, b) => string.Compare(a.Apellidos, b.Apellidos, StringComparison.OrdinalIgnoreCase);
             else
@@ -134,9 +143,6 @@ namespace FundamentosDeAlgoritmos
             Console.WriteLine();
             MostrarLista(estudiantes);
         }
-
-
-
         // ---------------------------------------------------------
         // Utilidades de consulta y visualización
         // ---------------------------------------------------------
@@ -157,7 +163,6 @@ namespace FundamentosDeAlgoritmos
                 Console.WriteLine(e);
             Console.WriteLine($"\nTotal: {lista.Count} registro(s)");
         }
-
         // Algoritmo de ordenamiento burbuja
         public static void OrdenarBurbuja(List<Estudiante> lista, Comparison<Estudiante> comparar)
         {

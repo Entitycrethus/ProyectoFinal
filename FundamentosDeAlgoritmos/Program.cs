@@ -1,8 +1,5 @@
 ﻿// Prototipo académico: Registro y control de estudiantes
 // I.E. N.º 80892 "Los Pinos" - Secretaría / Área administrativa
-// Curso: Fundamentos de Programación
-// Almacenamiento: archivo CSV (Alternativa 1 del informe)
-// ============================================================
 using FundamentosDeAlgoritmos;
 using System;
 using System.Collections.Generic;
@@ -14,18 +11,9 @@ using static FundamentosDeAlgoritmos.GestorEstudiantes;
 using static FundamentosDeAlgoritmos.ValidadorEstudiante;
 namespace FundamentosDeAlgoritmos
 {
-    // Datos del estudiante (sección 4.1 del informe)
-
-
     class Program
     {
-
-
-
-
-        // ---------------------------------------------------------
-        // Programa principal y menú (sección 4.2)
-        // ---------------------------------------------------------
+        // Programa principal y menú 
         static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -47,15 +35,11 @@ namespace FundamentosDeAlgoritmos
                 }
                 if (opcion != 0)
                 {
-                    Console.WriteLine("\nPresione una tecla para continuar...");
+                    Console.WriteLine("Presione una tecla para continuar...");
                     Console.ReadKey(true);
                 }
-            } while (opcion != 0);
+            }
+            while (opcion != 0);
         }
-
-
-
-
-
     }
 }
