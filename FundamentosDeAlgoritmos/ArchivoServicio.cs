@@ -1,32 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using static FundamentosDeAlgoritmos.GestorEstudiantes;
 using System.Text;
 
 namespace FundamentosDeAlgoritmos
 {
     public class ArchivoServicio
     {
-        const string ArchivoCsv = "estudiantes.csv";
+
+        private readonly string _rutaArchivo;
+
+        public ArchivoServicio(string rutaArchivo = "estudiantes.csv")
+        {
+            _rutaArchivo= rutaArchivo;
+
+        }
 
         // Archivos CSV
-        public static void CargarDesdeArchivo()
+        public List<Estudiante> CargarDesdeArchivo()
         {
-            if (!File.Exists(ArchivoCsv)) return;
-            string[] lineas = File.ReadAllLines(ArchivoCsv, Encoding.UTF8);
+            List<Estudiante> lista = new List<Estudiante>();
+
+            if (!File.Exists(_rutaArchivo)) return lista;
+
+            string[] lineas = File.ReadAllLines(_rutaArchivo, Encoding.UTF8);
             for (int i = 1; i < lineas.Length; i++) // la línea 0 es el encabezado
             {
                 if (string.IsNullOrWhiteSpace(lineas[i])) continue;
                 Estudiante e = Estudiante.DesdeCsv(lineas[i]);
-                if (e != null) estudiantes.Add(e);
+                if (e != null) lista.Add(e);
             }
+
+            return lista;
         }
-        public static void GuardarEnArchivo()
+
+        public void GuardarEnArchivo(List<Estudiante> estudiantes) 
         {
             List<string> lineas = new List<string> { "Codigo,Nombres,Apellidos,Grado,Seccion,Contacto" };
             foreach (Estudiante e in estudiantes)
                 lineas.Add(e.ToCsv());
-            File.WriteAllLines(ArchivoCsv, lineas, Encoding.UTF8);
+            File.WriteAllLines(_rutaArchivo, lineas, Encoding.UTF8);
         }
 
 

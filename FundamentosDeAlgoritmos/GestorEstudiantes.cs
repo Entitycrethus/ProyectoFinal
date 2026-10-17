@@ -2,17 +2,27 @@
 using System.Collections.Generic;
 using System.Text;
 using static FundamentosDeAlgoritmos.ValidadorEstudiante;
-using static FundamentosDeAlgoritmos.ArchivoServicio;
+using static FundamentosDeAlgoritmos.ConsolaUI;
 namespace FundamentosDeAlgoritmos
 {
     public class GestorEstudiantes
     {
 
-        public static List<Estudiante> estudiantes = new List<Estudiante>();
+        private readonly List<Estudiante> _estudiantes;
+        private readonly ArchivoServicio _archivoServicio;
 
-        static Estudiante BuscarPorCodigo(string codigo)
+
+        public GestorEstudiantes(ArchivoServicio archivoServicio)
         {
-            foreach (Estudiante e in estudiantes)
+            _archivoServicio = archivoServicio;
+            _estudiantes = new List<Estudiante>();
+        }
+
+        public int CantidadEstudiantes => _estudiantes.Count;
+
+        public Estudiante BuscarPorCodigo(string codigo)
+        {
+            foreach (Estudiante e in _estudiantes)
             {
                 if (e.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
                     return e;
@@ -21,7 +31,7 @@ namespace FundamentosDeAlgoritmos
         }
 
         // 1. Registrar
-        public static void RegistrarEstudiante()
+        public void RegistrarEstudiante()
         {
             Console.WriteLine("--- REGISTRAR ESTUDIANTE ---");
             string codigo;
@@ -41,12 +51,12 @@ namespace FundamentosDeAlgoritmos
                 Seccion = LeerTexto("Sección (una letra A-Z): ", EsSeccionValida, "Ingrese una sola letra.").ToUpper(),
                 Contacto = LeerTexto("Contacto (9 dígitos): ", EsContactoValido, "Debe tener exactamente 9 dígitos.")
             };
-            estudiantes.Add(nuevo);
-            GuardarEnArchivo();
+            _estudiantes.Add(nuevo);
+            _archivoServicio.GuardarEnArchivo(_estudiantes);
             Console.WriteLine("\nEstudiante registrado correctamente.");
         }
         // 2. Buscar
-        public static void BuscarEstudiante()
+        public void BuscarEstudiante()
         {
             Console.WriteLine("--- BUSCAR ESTUDIANTE ---");
             Console.WriteLine("1. Por código");
@@ -63,7 +73,7 @@ namespace FundamentosDeAlgoritmos
             else if (criterio == 2)
             {
                 string texto = LeerTexto("Nombre o apellido: ", t => t.Length > 0, "Ingrese un texto.");
-                foreach (Estudiante e in estudiantes)
+                foreach (Estudiante e in _estudiantes)
                 {
                     if (Contiene(e.Nombres, texto) || Contiene(e.Apellidos, texto))
                         resultados.Add(e);
@@ -73,17 +83,18 @@ namespace FundamentosDeAlgoritmos
             {
                 int grado = LeerEntero("Grado (1 a 6): ", 1, 6);
                 string seccion = LeerTexto("Sección: ", EsSeccionValida, "Ingrese una sola letra.");
-                foreach (Estudiante e in estudiantes)
+                foreach (Estudiante e in _estudiantes)
                 {
                     if (e.Grado == grado && e.Seccion.Equals(seccion, StringComparison.OrdinalIgnoreCase))
                         resultados.Add(e);
                 }
             }
             Console.WriteLine();
+
             MostrarLista(resultados);
         }
         // 3. Modificar (dejar vacío = conservar el valor actual)
-        public static void ModificarEstudiante()
+        public void ModificarEstudiante()
         {
             Console.WriteLine("--- MODIFICAR ESTUDIANTE ---");
             string codigo = LeerTexto("Código del estudiante: ", t => t.Length > 0, "Ingrese un código.");
@@ -107,11 +118,11 @@ namespace FundamentosDeAlgoritmos
             if (seccion != "") e.Seccion = seccion.ToUpper();
             string contacto = LeerOpcional($"Contacto [{e.Contacto}]: ", EsContactoValido);
             if (contacto != "") e.Contacto = contacto;
-            GuardarEnArchivo();
+            _archivoServicio.GuardarEnArchivo(_estudiantes);
             Console.WriteLine("Datos actualizados correctamente.");
         }
         // 4. Ordenar y listar
-        public static void OrdenarYListar()
+        public void OrdenarYListar()
         {
             Console.WriteLine("--- ORDENAR ESTUDIANTES ---");
             Console.WriteLine("1. Por código");
@@ -129,12 +140,16 @@ namespace FundamentosDeAlgoritmos
                     int r = a.Grado.CompareTo(b.Grado);
                     return r != 0 ? r : string.Compare(a.Seccion, b.Seccion, StringComparison.OrdinalIgnoreCase);
                 };
-            OrdenarBurbuja(estudiantes, comparar);
-            GuardarEnArchivo();
+            OrdenarBurbuja(_estudiantes, comparar);
+            _archivoServicio.GuardarEnArchivo(_estudiantes);
             Console.WriteLine();
-            MostrarLista(estudiantes);
+            MostrarLista(_estudiantes);
         }
-
+        // 5. Listar todos
+        public void ListarTodos()
+        {
+            MostrarLista(_estudiantes);
+        }
 
 
         // ---------------------------------------------------------
@@ -144,19 +159,7 @@ namespace FundamentosDeAlgoritmos
         {
             return texto.IndexOf(buscado, StringComparison.OrdinalIgnoreCase) >= 0;
         }
-        public static void MostrarLista(List<Estudiante> lista)
-        {
-            if (lista.Count == 0)
-            {
-                Console.WriteLine("No hay registros para mostrar.");
-                return;
-            }
-            Console.WriteLine($"{"Código",-8} {"Apellidos",-18} {"Nombres",-18} {"Grado",-6} {"Sección",-8} Contacto");
-            Console.WriteLine(new string('-', 75));
-            foreach (Estudiante e in lista)
-                Console.WriteLine(e);
-            Console.WriteLine($"\nTotal: {lista.Count} registro(s)");
-        }
+
 
         // Algoritmo de ordenamiento burbuja
         public static void OrdenarBurbuja(List<Estudiante> lista, Comparison<Estudiante> comparar)
