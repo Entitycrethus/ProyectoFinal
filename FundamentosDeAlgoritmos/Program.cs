@@ -17,20 +17,23 @@ namespace FundamentosDeAlgoritmos
         static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
-            CargarDesdeArchivo();
+            ArchivoServicio archivoServicio = new ArchivoServicio();
+            GestorEstudiantes gestor = new GestorEstudiantes(archivoServicio);
+
+
             int opcion;
             do
             {
-                MostrarMenu();
+                MostrarMenu(gestor.CantidadEstudiantes);
                 opcion = LeerEntero("Seleccione una opción: ", 0, 5);
                 Console.WriteLine();
                 switch (opcion)
                 {
-                    case 1: RegistrarEstudiante(); break;
-                    case 2: BuscarEstudiante(); break;
-                    case 3: ModificarEstudiante(); break;
-                    case 4: OrdenarYListar(); break;
-                    case 5: MostrarLista(estudiantes); break;
+                    case 1: gestor.RegistrarEstudiante(); break;
+                    case 2: gestor.BuscarEstudiante(); break;
+                    case 3: gestor.ModificarEstudiante(); break;
+                    case 4: gestor.OrdenarYListar(); break;
+                    case 5: gestor.ListarTodos(); break;
                     case 0: Console.WriteLine("Datos guardados. ¡Hasta pronto!"); break;
                 }
                 if (opcion != 0)
