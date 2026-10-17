@@ -34,7 +34,7 @@ namespace FundamentosDeAlgoritmos
                     case 3: gestor.ModificarEstudiante(); break;
                     case 4: gestor.OrdenarYListar(); break;
                     case 5: gestor.ListarTodos(); break;
-                    case 0: Console.WriteLine("Datos guardados. ¡Hasta pronto!"); break;
+                    case 0: Console.WriteLine("Datos guardados"); break;
                 }
                 if (opcion != 0)
                 {

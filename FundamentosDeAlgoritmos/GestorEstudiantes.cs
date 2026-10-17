@@ -20,7 +20,7 @@ namespace FundamentosDeAlgoritmos
 
         public int CantidadEstudiantes => _estudiantes.Count;
 
-        public Estudiante BuscarPorDNI(string codigo)
+        public Estudiante BuscarPorDNI(string DNI)
         {
             foreach (Estudiante e in _estudiantes)
             {
@@ -36,12 +36,14 @@ namespace FundamentosDeAlgoritmos
             Console.WriteLine("=========================================");
             Console.WriteLine("         REGISTRO DE ESTUDIANTES");
             Console.WriteLine("=========================================");
-            int DNI;
+            string DNI;
             while (true)
             {
-                DNI = int.Parse(LeerTexto("DNI del estudante (8 digitos): ", EsDNIValido,
-                     "DNI inválido. Solo esta permitido 8 digitos númericos."));
+                DNI = LeerTexto("DNI del estudante (8 digitos): ", EsDNIValido,
+                     "DNI inválido. Solo esta permitido 8 digitos númericos.");
+
                 if (BuscarPorDNI(DNI) == null) break;
+
                 Console.WriteLine("Ya existe un estudiante con ese DNI.");
             }
             Estudiante nuevo = new Estudiante
@@ -71,7 +73,7 @@ namespace FundamentosDeAlgoritmos
             List<Estudiante> resultados = new List<Estudiante>();
             if (criterio == 1)
             {
-                int DNI = int.Parse(LeerTexto("DNI: ", EsDNIValido, "Ingrese un DNI válido."));
+                string DNI = LeerTexto("DNI: ", EsDNIValido, "Ingrese un DNI válido.");
                 Estudiante e = BuscarPorDNI(DNI);
                 if (e != null) resultados.Add(e);
             }
@@ -105,7 +107,7 @@ namespace FundamentosDeAlgoritmos
             Console.WriteLine("=========================================");
             Console.WriteLine("         MODIFICAR ESTUDIANTE");
             Console.WriteLine("=========================================");
-            int DNI = int.Parse(LeerTexto("DNI del estudiante: ", EsDNIValido, "Ingrese un DNI válido."));
+            string DNI = LeerTexto("DNI del estudiante: ", EsDNIValido, "Ingrese un DNI válido.");
             Estudiante e = BuscarPorDNI(DNI);
             if (e == null)
             {
