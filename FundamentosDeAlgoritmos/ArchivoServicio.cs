@@ -20,6 +20,7 @@ namespace FundamentosDeAlgoritmos
         {
             List<Estudiante> lista = new List<Estudiante>();
 
+
             if (!File.Exists(_rutaArchivo)) return lista;
 
             string[] lineas = File.ReadAllLines(_rutaArchivo, Encoding.UTF8);
@@ -35,7 +36,7 @@ namespace FundamentosDeAlgoritmos
 
         public void GuardarEnArchivo(List<Estudiante> estudiantes) 
         {
-            List<string> lineas = new List<string> { "Codigo,Nombres,Apellidos,Grado,Seccion,Contacto" };
+            List<string> lineas = new List<string> { "DNI,Nombres,Apellidos,Nivel,Grado,Seccion,Contacto" };
             foreach (Estudiante e in estudiantes)
                 lineas.Add(e.ToCsv());
             File.WriteAllLines(_rutaArchivo, lineas, Encoding.UTF8);

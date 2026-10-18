@@ -22,9 +22,11 @@ namespace FundamentosDeAlgoritmos
                 if (!char.IsLetter(c) && c != ' ') return false;
             return true;
         }
-        public static bool EsSeccionValida(string t)
+        public static bool EsSeccionValida(string t, char maxLetra = 'D')
         {
-            return t.Length == 1 && char.IsLetter(t[0]);
+            if (t.Length != 1) return false;
+            char letra = char.ToUpper(t[0]); // Convierte 'a' en 'A' para comparar fácil
+            return letra >= 'A' && letra <= maxLetra;
         }
         public static bool EsContactoValido(string t)
         {
@@ -66,6 +68,13 @@ namespace FundamentosDeAlgoritmos
                     return valor;
                 Console.WriteLine($"Ingrese un número entre {min} y {max}.");
             }
+        }
+
+        public static bool EsNivelValido(string t)
+        {
+            return t.Equals("Primaria", StringComparison.OrdinalIgnoreCase) ||
+                   t.Equals("Secundaria", StringComparison.OrdinalIgnoreCase) ||
+                   t == "1" || t == "2";
         }
     }
 }

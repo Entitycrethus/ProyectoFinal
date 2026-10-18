@@ -30,8 +30,8 @@ namespace FundamentosDeAlgoritmos
                 Console.WriteLine("No hay registros para mostrar.");
                 return;
             }
-            Console.WriteLine($"{"Código",-8} {"Apellidos",-18} {"Nombres",-18} {"Grado",-6} {"Sección",-8} Contacto");
-            Console.WriteLine(new string('-', 75));
+            Console.WriteLine($"{"DNI",-10} {"Apellidos",-18} {"Nombres",-18} {"Grado",-12} {"Aula",-8} Contacto");
+            Console.WriteLine(new string('-', 85)); 
             foreach (Estudiante e in lista)
                 Console.WriteLine(e);
             Console.WriteLine($"\nTotal: {lista.Count} registro(s)");
