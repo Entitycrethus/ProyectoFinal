@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGE - Sistema de Gestión Escolar | Administración de Estudiantes</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Barra Lateral de Navegación Administrativa -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>I.E. Gestión Escolar</h1>
+                <span>Portal Administrativo</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section-label">MÓDULOS DEL SISTEMA</div>
+        <nav class="sidebar-nav" aria-label="Navegación Principal">
+            <button type="button" class="nav-item active" data-tab="dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="9" rx="1"/>
+                    <rect x="14" y="3" width="7" height="5" rx="1"/>
+                    <rect x="14" y="12" width="7" height="9" rx="1"/>
+                    <rect x="3" y="16" width="7" height="5" rx="1"/>
+                </svg>
+                <span>Panel Principal</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="registrar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <line x1="19" y1="8" x2="19" y2="14"/>
+                    <line x1="22" y1="11" x2="16" y2="11"/>
+                </svg>
+                <span>Registrar Estudiante</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="buscar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <span>Buscar y Filtrar</span>
+                <span class="nav-badge" id="navTotalBadge">0</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="corregir">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20h9"/>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+                <span>Corregir Datos</span>
+            </button>
+
+            <button type="button" class="nav-item" data-tab="basedatos">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                </svg>
+                <span>Base de Datos y Excel</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="db-status-card">
+                <div class="db-status-header">
+                    <span class="status-dot"></span>
+                    <strong>Base de Datos Activa</strong>
+                </div>
+                <p>Guardado automático local e instantáneo.</p>
+                <button type="button" class="btn-sidebar-excel" id="btnSidebarExportExcel">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Exportar a Excel (.xlsx)
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contenedor Principal -->
+    <div class="main-wrapper">
+        <!-- Encabezado Superior -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button type="button" class="mobile-menu-btn" id="btnToggleMenu" aria-label="Abrir menú">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <div>
+                    <h2 id="pageTitle">Panel Principal Administrativo</h2>
+                    <p id="pageSubtitle">Resumen general del padrón de estudiantes y accesos directos</p>
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="next-code-pill" title="Próximo código único autogenerado disponible">
+                    <span class="pill-label">Próximo Código:</span>
+                    <strong id="headerNextCode">EST-2026-0006</strong>
+                </div>
+                <button type="button" class="btn btn-excel" id="btnTopExportExcel">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="8" y1="13" x2="16" y2="17"/>
+                        <line x1="16" y1="13" x2="8" y2="17"/>
+                    </svg>
+                    <span>Descargar Excel (.xlsx)</span>
+                </button>
+                <button type="button" class="btn btn-primary" id="btnQuickRegister">
+                    + Nuevo Estudiante
+                </button>
+            </div>
+        </header>
+
+        <!-- Área de Contenido por Subapartados -->
+        <main class="content-area">
+
+            <!-- ==========================================
+                 SUBAPARTADO 1: PANEL PRINCIPAL (DASHBOARD)
+                 ========================================== -->
+            <section class="tab-panel active" id="tab-dashboard">
+                <!-- Tarjetas de Resumen -->
+                <div class="stats-grid">
+                    <article class="stat-card stat-blue">
+                        <div class="stat-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total de Estudiantes</span>
+                            <h3 class="stat-value" id="statTotal">0</h3>
+                            <span class="stat-meta">Registrados en la base de datos</span>
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-emerald">
+                        <div class="stat-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Nivel Primaria</span>
+                            <h3 class="stat-value" id="statPrimaria">0</h3>
+                            <span class="stat-meta">1° a 6° Grado (Secc. A - C)</span>
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-indigo">
+                        <div class="stat-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Nivel Secundaria</span>
+                            <h3 class="stat-value" id="statSecundaria">0</h3>
+                            <span class="stat-meta">1° a 5° Grado (Secc. A - D)</span>
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-amber">
+                        <div class="stat-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Aulas con Alumnos</span>
+                            <h3 class="stat-value" id="statAulas">0</h3>
+                            <span class="stat-meta">Secciones activas en el año</span>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Accesos Rápidos para Administrativos -->
+                <div class="quick-actions-banner">
+                    <div class="quick-banner-text">
+                        <h3>¿Qué gestión administrativa desea realizar hoy?</h3>
+                        <p>Seleccione una tarea frecuente para ir directamente al módulo correspondiente.</p>
+                    </div>
+                    <div class="quick-banner-buttons">
+                        <button type="button" class="quick-card-btn" data-goto="registrar">
+                            <span class="qb-icon qb-blue">+</span>
+                            <div>
+                                <strong>Matricular Estudiante</strong>
+                                <small>Genera código único automático</small>
+                            </div>
+                        </button>
+                        <button type="button" class="quick-card-btn" data-goto="buscar">
+                            <span class="qb-icon qb-indigo">🔍</span>
+                            <div>
+                                <strong>Buscar Estudiante</strong>
+                                <small>Por código, nombre, grado o sección</small>
+                            </div>
+                        </button>
+                        <button type="button" class="quick-card-btn" data-goto="corregir">
+                            <span class="qb-icon qb-amber">✎</span>
+                            <div>
+                                <strong>Corregir Datos</strong>
+                                <small>Modificar alumno o apoderado</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla Resumen de Últimos Registrados y Distribución -->
+                <div class="dashboard-split">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Últimos Estudiantes Registrados</h3>
+                                <p>Registros más recientes ingresados al sistema</p>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm" data-goto="buscar">
+                                Ver padrón completo →
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código Único</th>
+                                        <th>Estudiante</th>
+                                        <th>Nivel y Aula</th>
+                                        <th>Apoderado / Padre / Madre</th>
+                                        <th>Teléfonos</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboardRecentBody">
+                                    <!-- Renderizado dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Resumen por Nivel y Grado</h3>
+                                <p>Distribución actual del alumnado</p>
+                            </div>
+                        </div>
+                        <div class="level-distribution" id="levelDistributionContainer">
+                            <!-- Renderizado dinámico -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 SUBAPARTADO 2: REGISTRAR ESTUDIANTE
+                 ========================================== -->
+            <section class="tab-panel" id="tab-registrar">
+                <div class="form-container">
+                    <!-- Banner del Código de Estudiante Autogenerado -->
+                    <div class="code-generator-banner">
+                        <div class="code-banner-left">
+                            <span class="badge-auto">AUTOGENERADO</span>
+                            <div>
+                                <h3>Código Único de Estudiante a Asignar</h3>
+                                <p>Este código irrepetible identificará al estudiante automáticamente al guardar su matrícula.</p>
+                            </div>
+                        </div>
+                        <div class="code-banner-right">
+                            <span class="generated-code-display" id="formPreviewCode">EST-2026-0006</span>
+                        </div>
+                    </div>
+
+                    <form id="formRegistroEstudiante" novalidate>
+                        <!-- Bloque 1: Datos del Estudiante -->
+                        <div class="card form-section-card">
+                            <div class="form-section-header">
+                                <span class="step-number">1</span>
+                                <div>
+                                    <h3>Datos Personales del Estudiante</h3>
+                                    <p>Ingrese los nombres, apellidos y datos de contacto directo del alumno.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="regNombres">Nombres del Estudiante <span class="req">*</span></label>
+                                    <input type="text" id="regNombres" placeholder="Ej. Juan Carlos" required autocomplete="off">
+                                    <small class="field-hint">Solo letras y espacios (mínimo 2 caracteres).</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regApellidos">Apellidos del Estudiante <span class="req">*</span></label>
+                                    <input type="text" id="regApellidos" placeholder="Ej. Pérez Gómez" required autocomplete="off">
+                                    <small class="field-hint">Apellido paterno y materno.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regDni">DNI del Estudiante <span class="optional-tag">(8 dígitos)</span></label>
+                                    <input type="text" id="regDni" maxlength="8" placeholder="Ej. 74859632" autocomplete="off">
+                                    <small class="field-hint">Documento de identidad (8 dígitos numéricos).</small>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label for="regCorreoEst">Correo Electrónico del Estudiante <span class="req">*</span></label>
+                                    <input type="email" id="regCorreoEst" placeholder="Ej. alumno@colegio.edu.pe" required autocomplete="off">
+                                    <small class="field-hint">Correo institucional o personal del estudiante.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regTelefonoEst">Teléfono / Celular del Estudiante <span class="req">*</span></label>
+                                    <input type="tel" id="regTelefonoEst" maxlength="9" placeholder="Ej. 987654321" required autocomplete="off">
+                                    <small class="field-hint">Número de 9 dígitos del estudiante.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bloque 2: Nivel, Grado y Sección -->
+                        <div class="card form-section-card">
+                            <div class="form-section-header">
+                                <span class="step-number">2</span>
+                                <div>
+                                    <h3>Ubicación Académica (Nivel, Grado y Sección)</h3>
+                                    <p>Los grados y secciones se ajustan automáticamente según el nivel elegido.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="regNivel">Nivel Educativo <span class="req">*</span></label>
+                                    <select id="regNivel" required>
+                                        <option value="Primaria">Primaria (1° a 6° Grado)</option>
+                                        <option value="Secundaria">Secundaria (1° a 5° Grado)</option>
+                                    </select>
+                                    <small class="field-hint">Seleccione Primaria o Secundaria.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regGrado">Grado <span class="req">*</span></label>
+                                    <select id="regGrado" required>
+                                        <!-- Se llena dinámicamente según el Nivel -->
+                                    </select>
+                                    <small class="field-hint" id="regGradoHint">En Primaria disponible de 1° a 6° grado.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regSeccion">Sección <span class="req">*</span></label>
+                                    <select id="regSeccion" required>
+                                        <!-- Se llena dinámicamente según el Nivel -->
+                                    </select>
+                                    <small class="field-hint" id="regSeccionHint">En Primaria secciones A, B y C.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bloque 3: Datos del Padre / Madre / Apoderado -->
+                        <div class="card form-section-card">
+                            <div class="form-section-header">
+                                <span class="step-number">3</span>
+                                <div>
+                                    <h3>Datos del Apoderado / Padre / Madre</h3>
+                                    <p>Información del familiar o responsable directo del estudiante para contacto administrativo.</p>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="regParentesco">Parentesco / Vínculo <span class="req">*</span></label>
+                                    <select id="regParentesco" required>
+                                        <option value="Madre">Madre</option>
+                                        <option value="Padre">Padre</option>
+                                        <option value="Apoderado / Tutor">Apoderado / Tutor Legal</option>
+                                    </select>
+                                    <small class="field-hint">Relación con el estudiante.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regNombresApo">Nombres del Apoderado/Padre/Madre <span class="req">*</span></label>
+                                    <input type="text" id="regNombresApo" placeholder="Ej. María Elena" required autocomplete="off">
+                                    <small class="field-hint">Nombres completos del responsable.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regApellidosApo">Apellidos del Apoderado/Padre/Madre <span class="req">*</span></label>
+                                    <input type="text" id="regApellidosApo" placeholder="Ej. Gómez Rivera" required autocomplete="off">
+                                    <small class="field-hint">Apellidos completos del responsable.</small>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="regTelefonoApo">Teléfono del Apoderado/Padre/Madre <span class="req">*</span></label>
+                                    <input type="tel" id="regTelefonoApo" maxlength="9" placeholder="Ej. 998877665" required autocomplete="off">
+                                    <small class="field-hint">Celular principal de emergencia (9 dígitos).</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regCorreoApo">Correo del Apoderado <span class="optional-tag">(Opcional)</span></label>
+                                    <input type="email" id="regCorreoApo" placeholder="Ej. apoderado@correo.com" autocomplete="off">
+                                    <small class="field-hint">Para envío de comunicados o boletas.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="regObservaciones">Observaciones Administrativas <span class="optional-tag">(Opcional)</span></label>
+                                    <input type="text" id="regObservaciones" placeholder="Ej. Documentación completa, beca, etc." autocomplete="off">
+                                    <small class="field-hint">Nota interna para secretaría.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Acciones del Formulario -->
+                        <div class="form-actions-bar">
+                            <button type="reset" class="btn btn-outline" id="btnLimpiarRegistro">
+                                Limpiar Formulario
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                    <polyline points="17 21 17 13 7 13 7 21"/>
+                                    <polyline points="7 3 7 8 15 8"/>
+                                </svg>
+                                Registrar Estudiante y Generar Código Único
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 SUBAPARTADO 3: BUSCAR Y FILTRAR ESTUDIANTES
+                 ========================================== -->
+            <section class="tab-panel" id="tab-buscar">
+                <div class="card filter-card">
+                    <div class="filter-grid">
+                        <div class="form-group search-input-group">
+                            <label for="searchQuery">Buscar Estudiante o Apoderado</label>
+                            <div class="input-with-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                </svg>
+                                <input type="text" id="searchQuery" placeholder="Escriba código (EST-2026...), DNI, nombres, apellidos, correo o teléfono...">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filterNivel">Nivel</label>
+                            <select id="filterNivel">
+                                <option value="TODOS">Todos los niveles</option>
+                                <option value="Primaria">Primaria</option>
+                                <option value="Secundaria">Secundaria</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filterGrado">Grado</label>
+                            <select id="filterGrado">
+                                <option value="TODOS">Todos los grados</option>
+                                <option value="1">1° Grado</option>
+                                <option value="2">2° Grado</option>
+                                <option value="3">3° Grado</option>
+                                <option value="4">4° Grado</option>
+                                <option value="5">5° Grado</option>
+                                <option value="6">6° Grado</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filterSeccion">Sección</label>
+                            <select id="filterSeccion">
+                                <option value="TODOS">Todas</option>
+                                <option value="A">Sección A</option>
+                                <option value="B">Sección B</option>
+                                <option value="C">Sección C</option>
+                                <option value="D">Sección D</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filterOrden">Ordenar por</label>
+                            <select id="filterOrden">
+                                <option value="recientes">Más recientes primero</option>
+                                <option value="codigo">Código de Estudiante</option>
+                                <option value="apellidos">Apellidos (A - Z)</option>
+                                <option value="aula">Nivel, Grado y Sección</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-footer">
+                        <span class="results-counter" id="searchResultsCounter">Mostrando 0 estudiantes</span>
+                        <div class="filter-footer-actions">
+                            <button type="button" class="btn btn-outline btn-sm" id="btnResetFilters">
+                                Restablecer filtros
+                            </button>
+                            <button type="button" class="btn btn-excel btn-sm" id="btnExportFilteredExcel">
+                                Exportar lista actual a Excel (.xlsx)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Código Único</th>
+                                    <th>DNI</th>
+                                    <th>Apellidos y Nombres</th>
+                                    <th>Nivel / Aula</th>
+                                    <th>Contacto del Estudiante</th>
+                                    <th>Padre / Madre / Apoderado</th>
+                                    <th>Tel. Apoderado</th>
+                                    <th>Acciones Administrativas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="searchTableBody">
+                                <!-- Renderizado dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 SUBAPARTADO 4: CORREGIR / MODIFICAR DATOS
+                 ========================================== -->
+            <section class="tab-panel" id="tab-corregir">
+                <div class="corregir-layout">
+                    <!-- Columna Izquierda: Selector Rápido del Estudiante a Corregir -->
+                    <div class="card selector-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>1. Seleccionar Estudiante</h3>
+                                <p>Busque por código único, DNI o apellidos para cargar su ficha.</p>
+                            </div>
+                        </div>
+
+                        <div class="selector-search-box">
+                            <input type="text" id="editSearchInput" placeholder="Buscar por código (EST-...), DNI o nombre...">
+                        </div>
+
+                        <div class="selector-list" id="editStudentList">
+                            <!-- Lista interactiva de estudiantes para corregir -->
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Formulario de Corrección -->
+                    <div class="card edit-form-card">
+                        <div id="editEmptyState" class="empty-edit-state">
+                            <div class="empty-icon">✎</div>
+                            <h3>Seleccione un estudiante de la lista izquierda</h3>
+                            <p>Podrá corregir sus nombres, apellidos, cambiarlo de nivel, grado o sección, así como actualizar su correo, teléfono o los datos de su padre/madre/apoderado.</p>
+                        </div>
+
+                        <form id="formCorregirEstudiante" class="hidden" novalidate>
+                            <div class="edit-header-banner">
+                                <div>
+                                    <span class="edit-code-tag" id="editBannerCode">EST-2026-0001</span>
+                                    <h3 id="editBannerName">Nombre del Estudiante</h3>
+                                    <p id="editBannerTimestamp">Última actualización: --</p>
+                                </div>
+                                <div class="edit-header-actions">
+                                    <button type="button" class="btn btn-outline btn-sm" id="btnViewCardFromEdit">
+                                        Ver Ficha Completa
+                                    </button>
+                                    <button type="button" class="btn btn-danger-outline btn-sm" id="btnDeleteStudent">
+                                        Eliminar Registro
+                                    </button>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="editCodigoOriginal">
+
+                            <h4 class="subsection-title">Datos del Estudiante</h4>
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="editNombres">Nombres <span class="req">*</span></label>
+                                    <input type="text" id="editNombres" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editApellidos">Apellidos <span class="req">*</span></label>
+                                    <input type="text" id="editApellidos" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editDni">DNI (8 dígitos)</label>
+                                    <input type="text" id="editDni" maxlength="8">
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="editCorreoEst">Correo del Estudiante <span class="req">*</span></label>
+                                    <input type="email" id="editCorreoEst" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editTelefonoEst">Teléfono del Estudiante <span class="req">*</span></label>
+                                    <input type="tel" id="editTelefonoEst" maxlength="9" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editEstado">Estado de Matrícula</label>
+                                    <select id="editEstado">
+                                        <option value="Activo">Activo</option>
+                                        <option value="Trasladado">Trasladado</option>
+                                        <option value="Retirado">Retirado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h4 class="subsection-title">Nivel, Grado y Sección</h4>
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="editNivel">Nivel Educativo <span class="req">*</span></label>
+                                    <select id="editNivel" required>
+                                        <option value="Primaria">Primaria</option>
+                                        <option value="Secundaria">Secundaria</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editGrado">Grado <span class="req">*</span></label>
+                                    <select id="editGrado" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editSeccion">Sección <span class="req">*</span></label>
+                                    <select id="editSeccion" required></select>
+                                </div>
+                            </div>
+
+                            <h4 class="subsection-title">Datos del Padre / Madre / Apoderado</h4>
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="editParentesco">Parentesco <span class="req">*</span></label>
+                                    <select id="editParentesco" required>
+                                        <option value="Madre">Madre</option>
+                                        <option value="Padre">Padre</option>
+                                        <option value="Apoderado / Tutor">Apoderado / Tutor Legal</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editNombresApo">Nombres del Apoderado <span class="req">*</span></label>
+                                    <input type="text" id="editNombresApo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editApellidosApo">Apellidos del Apoderado <span class="req">*</span></label>
+                                    <input type="text" id="editApellidosApo" required>
+                                </div>
+                            </div>
+
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label for="editTelefonoApo">Teléfono del Apoderado <span class="req">*</span></label>
+                                    <input type="tel" id="editTelefonoApo" maxlength="9" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCorreoApo">Correo del Apoderado</label>
+                                    <input type="email" id="editCorreoApo">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editObservaciones">Observaciones</label>
+                                    <input type="text" id="editObservaciones">
+                                </div>
+                            </div>
+
+                            <div class="form-actions-bar">
+                                <button type="button" class="btn btn-outline" id="btnCancelEdit">
+                                    Descartar Cambios
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    Guardar Correcciones del Estudiante
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 SUBAPARTADO 5: BASE DE DATOS Y EXCEL
+                 ========================================== -->
+            <section class="tab-panel" id="tab-basedatos">
+                <div class="db-management-grid">
+                    <!-- Exportar a Excel (.xlsx) -->
+                    <div class="card db-action-card highlight-excel">
+                        <div class="db-card-icon excel-icon">XLS</div>
+                        <h3>Exportar Base de Datos a Excel (.xlsx)</h3>
+                        <p>Genera un libro oficial de Microsoft Excel (<strong>.xlsx</strong>) con formato institucional y <strong>3 hojas separadas</strong>: <em>Padrón General</em>, <em>Nivel Primaria</em> y <em>Nivel Secundaria</em>, incluyendo todos los datos del estudiante y su apoderado.</p>
+                        <button type="button" class="btn btn-excel btn-lg full-width" id="btnDbExportXlsx">
+                            Descargar Libro de Excel Completo (.xlsx)
+                        </button>
+                    </div>
+
+                    <!-- Exportar a CSV (Estándar y Compatible con C#) -->
+                    <div class="card db-action-card">
+                        <div class="db-card-icon csv-icon">CSV</div>
+                        <h3>Exportar en Formato CSV</h3>
+                        <p>Descargue los registros en texto plano separado por comas para integrarlos con otros sistemas o con la aplicación de consola C# del proyecto.</p>
+                        <div class="stacked-buttons">
+                            <button type="button" class="btn btn-primary full-width" id="btnDbExportCsvFull">
+                                Descargar CSV Completo (Todas las columnas)
+                            </button>
+                            <button type="button" class="btn btn-outline full-width" id="btnDbExportCsvCSharp">
+                                Descargar estudiantes.csv (Compatible con C#)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Importar Datos desde Archivo -->
+                    <div class="card db-action-card">
+                        <div class="db-card-icon import-icon">↑</div>
+                        <h3>Importar Estudiantes desde CSV</h3>
+                        <p>Cargue un archivo <code>.csv</code> (del sistema web o el archivo <code>estudiantes.csv</code> de C#) para incorporar o actualizar registros automáticamente.</p>
+                        <div class="import-controls">
+                            <input type="file" id="inputImportCsv" accept=".csv" class="file-input">
+                            <button type="button" class="btn btn-outline full-width" id="btnProcessImport">
+                                Importar Archivo Seleccionado
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mantenimiento de Base de Datos -->
+                    <div class="card db-action-card">
+                        <div class="db-card-icon settings-icon">⚙</div>
+                        <h3>Mantenimiento de la Base de Datos</h3>
+                        <p>Los datos están almacenados de forma persistente en su navegador (<code>LocalStorage</code> + <code>IndexedDB</code>). Puede restaurar los datos de demostración cuando lo necesite.</p>
+                        <div class="stacked-buttons">
+                            <button type="button" class="btn btn-outline full-width" id="btnRestoreSeed">
+                                Restaurar Datos de Demostración (5 alumnos)
+                            </button>
+                            <button type="button" class="btn btn-danger-outline full-width" id="btnClearDatabase">
+                                Vaciar Toda la Base de Datos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal: Ficha Completa del Estudiante / Confirmación de Matrícula -->
+    <div class="modal-backdrop hidden" id="studentModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-badge">FICHA OFICIAL DE MATRÍCULA</span>
+                    <h3 id="modalStudentTitle">Ficha del Estudiante</h3>
+                </div>
+                <button type="button" class="modal-close" id="btnCloseModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="modal-body" id="modalStudentContent">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="btnPrintFicha">
+                    Imprimir Ficha
+                </button>
+                <button type="button" class="btn btn-primary" id="btnEditFromModal">
+                    Corregir Datos de este Estudiante
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Notificaciones Toast -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- Scripts del Sistema -->
+    <script src="js/db.js"></script>
+    <script src="js/excel.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
